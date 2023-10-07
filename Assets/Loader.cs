@@ -22,10 +22,25 @@ public class Loader : MonoBehaviour
             Invoke("LoadAsset", 5);
         };
 
+        
+    }
+
+    private void GetCachedVersions()
+    {
+        foreach (var resourceLocator in Addressables.ResourceLocators)
+        {
+            foreach (var key in resourceLocator.Keys)
+            {
+                Debug.Log(key);
+            }
+        }
     }
 
     private void LoadAsset()
     {
-        m_Asset.InstantiateAsync();
+        m_Asset.InstantiateAsync().Completed += handle =>
+        {
+            GetCachedVersions();    
+        };
     }
 }
