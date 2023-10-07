@@ -20,9 +20,10 @@ public class Loader : MonoBehaviour
     {
         Addressables.InitializeAsync().Completed += handler =>
         {
+#if !PLATFORM_WEBGL
             if (m_ClearCache)
                 Caching.ClearCache();
-
+#endif
             Invoke("LoadAsset", 5);
         };
     }
@@ -73,7 +74,11 @@ public class Loader : MonoBehaviour
         var msj = new StringBuilder();
         foreach (var bundle in bundles)
         {
+#if PLATFORM_WEBGL
+            msj.AppendLine($"name: {bundle.name}, hash: {bundle.hash}, cached: False");
+#else
             msj.AppendLine($"name: {bundle.name}, hash: {bundle.hash}, cached: {Caching.IsVersionCached(bundle)}");
+#endif
         }
         Debug.Log(msj);
     }
